@@ -1600,20 +1600,23 @@ section {
 }
 
 /* Portfolio grid — for non-scroll layout on portfolio page */
-.portfolio-grid {
+.portfolio-grid,
+.projects-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
 }
 
 @media (min-width: 768px) {
-  .portfolio-grid {
+  .portfolio-grid,
+  .projects-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
-  .portfolio-grid {
+  .portfolio-grid,
+  .projects-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
