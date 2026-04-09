@@ -1652,3 +1652,130 @@ section {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   Mobile cramp fixes (2026-04-09)
+   - Hero stats: on small screens, flow naturally under the buttons
+     instead of being absolutely positioned and overlapping them.
+   - Ensure `.reveal` sections don't stay invisible forever if the
+     IntersectionObserver never fires (e.g. no-JS, bot, screenshot tool).
+   ============================================================ */
+
+@media (max-width: 767px) {
+  .hero {
+    padding-bottom: 32px;
+  }
+  .hero-stats {
+    position: static;
+    border-top: 1px solid var(--border-light);
+    margin-top: 40px;
+    padding: 24px 0 0;
+  }
+  .hero-stats .container {
+    gap: 20px;
+  }
+}
+
+/* Progressive-enhancement fallback: if the user's browser blocks
+   IntersectionObserver (or some oddity prevents the `revealed` class
+   from being added), make sure reveal sections still fade in via a
+   one-shot CSS animation after a short delay. */
+@keyframes bwReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reveal {
+  animation: bwReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+}
+.reveal.revealed {
+  animation: none;
+}
+
+/* ============================================================
+   Video Lightbox (in-page YouTube player)
+   ============================================================ */
+.video-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 40px);
+  animation: vlFade 0.25s ease;
+}
+.video-lightbox.active { display: flex; }
+
+@keyframes vlFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.video-lightbox-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+}
+.video-lightbox-inner iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.video-lightbox-close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+.video-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Play badge overlay on video-enabled project cards */
+.project-card[data-video]::after {
+  content: '▶';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  pointer-events: none;
+  opacity: 0.92;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  z-index: 3;
+}
+.project-card[data-video]:hover::after {
+  transform: translate(-50%, -50%) scale(1.08);
+  opacity: 1;
+}

@@ -394,4 +394,75 @@ document.addEventListener('DOMContentLoaded', () => {
     updateParallax();
   }
 
+
+  /* ============================
+     11. In-page YouTube lightbox
+     Click any element with data-video="VIDEO_ID" to open the YouTube
+     player inside an overlay instead of navigating away. ESC or click
+     the backdrop to close. Iframe is removed on close so audio stops.
+     ============================ */
+  const videoTriggers = document.querySelectorAll('[data-video]');
+
+  if (videoTriggers.length > 0) {
+    // Build the overlay once, lazily.
+    let lightbox;
+    let inner;
+    const ensureLightbox = () => {
+      if (lightbox) return;
+      lightbox = document.createElement('div');
+      lightbox.className = 'video-lightbox';
+      inner = document.createElement('div');
+      inner.className = 'video-lightbox-inner';
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'video-lightbox-close';
+      close.setAttribute('aria-label', 'Close video');
+      close.textContent = '\u2715'; // ×
+      close.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+      inner.appendChild(close);
+      lightbox.appendChild(inner);
+      document.body.appendChild(lightbox);
+    };
+
+    const openLightbox = (videoId) => {
+      ensureLightbox();
+      // Remove any previous iframe, then add a fresh one
+      const oldFrame = inner.querySelector('iframe');
+      if (oldFrame) oldFrame.remove();
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('title', 'Video player');
+      inner.appendChild(iframe);
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+      if (!lightbox) return;
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      // Strip the iframe so audio stops and the next open starts fresh
+      const frame = inner?.querySelector('iframe');
+      if (frame) frame.remove();
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    videoTriggers.forEach((el) => {
+      el.addEventListener('click', (e) => {
+        const id = el.getAttribute('data-video');
+        if (!id) return;
+        e.preventDefault();
+        openLightbox(id);
+      });
+    });
+  }
+
 });
