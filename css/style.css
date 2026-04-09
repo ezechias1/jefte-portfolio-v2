@@ -1849,3 +1849,50 @@ section {
 .showreel-hero .play-btn:hover {
   transform: translate(-50%, -50%) scale(1.05);
 }
+
+/* Showreel trigger — anchor wraps the placeholder so the whole
+   hero is one giant click target that opens the lightbox. */
+.showreel-trigger {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+.showreel-trigger .video-placeholder {
+  position: relative;
+}
+/* Dark overlay over the thumbnail so the HIGHLIGHT REEL label
+   and play button stay legible even over bright frames. */
+.showreel-trigger .video-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.35s ease;
+}
+.showreel-trigger:hover .video-placeholder::before {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+.showreel-trigger .video-placeholder > span,
+.showreel-trigger .video-placeholder > .play-btn {
+  position: relative;
+  z-index: 2;
+}
+/* Kick the label above the play button visually */
+.showreel-trigger .video-placeholder > span {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  color: #fff;
+  letter-spacing: 0.2em;
+}
