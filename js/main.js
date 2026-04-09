@@ -397,22 +397,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ============================
      11a. YouTube thumbnail fallback
-     Some videos don't have a maxresdefault.jpg on YouTube's CDN.
-     When that 404s, transparently fall back to hqdefault.jpg so
-     the card still has an image instead of a broken-image icon.
+     YouTube's CDN does NOT 404 when a size doesn't exist — it
+     returns a 120x90 grey placeholder image instead. So detecting
+     the fallback requires checking naturalWidth after load, not
+     just listening for an error event.
      ============================ */
+  const swapToHqDefault = (img) => {
+    const src = img.getAttribute('src') || '';
+    if (src.includes('maxresdefault')) {
+      img.setAttribute('src', src.replace('maxresdefault', 'hqdefault'));
+    }
+  };
+
   document.querySelectorAll('img[src*="img.youtube.com"]').forEach((img) => {
-    img.addEventListener(
-      'error',
-      () => {
-        const src = img.getAttribute('src') || '';
-        if (src.includes('maxresdefault')) {
-          img.setAttribute('src', src.replace('maxresdefault', 'hqdefault'));
-        }
-      },
-      { once: true },
-    );
+    // Case 1: image genuinely 404s
+    img.addEventListener('error', () => swapToHqDefault(img), { once: true });
+    // Case 2: YouTube returns its 120x90 placeholder for missing sizes
+    const check = () => {
+      if (img.naturalWidth > 0 && img.naturalWidth <= 120) {
+        swapToHqDefault(img);
+      }
+    };
+    if (img.complete) check();
+    else img.addEventListener('load', check, { once: true });
   });
+
+  // Also handle showreel background-image (inline style on index.html).
+  // If we're on the home page, probe the showreel thumbnail via a hidden
+  // Image() and swap the background-image if YouTube returned the placeholder.
+  const showreel = document.querySelector('.showreel-trigger .video-placeholder');
+  if (showreel) {
+    const style = showreel.getAttribute('style') || '';
+    const match = style.match(/url\(['"]?(https:\/\/img\.youtube\.com\/vi\/([^/]+)\/maxresdefault\.jpg)['"]?\)/);
+    if (match) {
+      const probe = new Image();
+      probe.onload = () => {
+        if (probe.naturalWidth > 0 && probe.naturalWidth <= 120) {
+          const fallback = match[1].replace('maxresdefault', 'hqdefault');
+          showreel.style.backgroundImage = `url('${fallback}')`;
+        }
+      };
+      probe.src = match[1];
+    }
+  }
 
 
   /* ============================
