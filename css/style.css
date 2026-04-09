@@ -1883,16 +1883,42 @@ section {
     rgba(0, 0, 0, 0.4) 100%
   );
 }
-.showreel-trigger .video-placeholder > span,
-.showreel-trigger .video-placeholder > .play-btn {
-  position: relative;
-  z-index: 2;
-}
-/* Kick the label above the play button visually */
+/* Label sits absolute top-left, above the gradient overlay. */
 .showreel-trigger .video-placeholder > span {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: clamp(16px, 3vw, 28px);
+  left: clamp(16px, 3vw, 28px);
   color: #fff;
   letter-spacing: 0.2em;
+  z-index: 2;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  text-transform: uppercase;
+}
+
+/* Play button: force absolute center on top of the gradient.
+   Previous rule accidentally set position:relative via a combined
+   selector and broke centering. */
+.showreel-trigger .video-placeholder > .play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(64px, 10vw, 100px);
+  height: clamp(64px, 10vw, 100px);
+  margin: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.showreel-trigger .video-placeholder > .play-btn svg {
+  fill: #fff;
+  width: 32px;
+  height: 32px;
+}
+.showreel-trigger:hover .video-placeholder > .play-btn {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: rgba(255, 255, 255, 0.22);
 }

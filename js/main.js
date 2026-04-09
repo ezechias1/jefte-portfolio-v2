@@ -396,6 +396,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ============================
+     11a. YouTube thumbnail fallback
+     Some videos don't have a maxresdefault.jpg on YouTube's CDN.
+     When that 404s, transparently fall back to hqdefault.jpg so
+     the card still has an image instead of a broken-image icon.
+     ============================ */
+  document.querySelectorAll('img[src*="img.youtube.com"]').forEach((img) => {
+    img.addEventListener(
+      'error',
+      () => {
+        const src = img.getAttribute('src') || '';
+        if (src.includes('maxresdefault')) {
+          img.setAttribute('src', src.replace('maxresdefault', 'hqdefault'));
+        }
+      },
+      { once: true },
+    );
+  });
+
+
+  /* ============================
      11. In-page YouTube lightbox
      Click any element with data-video="VIDEO_ID" to open the YouTube
      player inside an overlay instead of navigating away. ESC or click
