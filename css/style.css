@@ -1922,3 +1922,78 @@ section {
   transform: translate(-50%, -50%) scale(1.08);
   background: rgba(255, 255, 255, 0.22);
 }
+
+/* ============================================================
+   Home polish (2026-04-09 pt 2)
+   ============================================================ */
+
+/* Featured Projects: horizontal-scroll stays on desktop, but on
+   mobile turn it into a 2x2 grid so all 4 videos are visible
+   without swiping. Nobody swipes. */
+@media (max-width: 767px) {
+  .projects-scroll {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+  }
+  .projects-scroll .project-card {
+    width: 100% !important;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+}
+
+/* Showreel vignette — darker corners, bright center. Makes the
+   centered play button feel inevitable. */
+.showreel-trigger .video-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0.35) 80%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+/* Location beat — one-line personality between Featured Projects
+   and Services. Thin strip, no background heaviness. */
+.location-beat {
+  padding: 24px 0;
+  background-color: var(--bg-light);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  text-align: center;
+}
+.location-beat p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.location-beat .location-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(212, 85, 42, 0.15);
+  animation: locationPulse 2.4s ease-in-out infinite;
+}
+@keyframes locationPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.8); opacity: 0.6; }
+}
+body.light .location-beat {
+  background-color: var(--bg-light);
+}
