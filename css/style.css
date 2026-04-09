@@ -1779,3 +1779,73 @@ section {
   transform: translate(-50%, -50%) scale(1.08);
   opacity: 1;
 }
+
+/* ============================================================
+   Play badge + showreel centering fixes (2026-04-09)
+   ============================================================ */
+
+/* .project-card had no position:relative, so the ::after play
+   badge I added earlier was escaping the card bounds. Scope the
+   badge to the image container which already has position:relative. */
+.project-card[data-video]::after {
+  content: none;
+}
+.project-card[data-video] .project-card-image {
+  position: relative;
+}
+.project-card[data-video] .project-card-image::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  z-index: 3;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0.95;
+  /* Play triangle, drawn with a clip-path so it crisps at any DPI */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><polygon points='8,5 19,12 8,19'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 56% center;
+  background-size: 28px 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+.project-card[data-video]:hover .project-card-image::after {
+  transform: translate(-50%, -50%) scale(1.08);
+  opacity: 1;
+}
+
+/* Showreel hero: center and size properly on mobile.
+   The inline aspect-ratio + min-height: 60vh combo was breaking
+   mobile layout because the forced height fought the aspect-ratio. */
+@media (max-width: 767px) {
+  .showreel-hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .showreel-hero .video-placeholder {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+  }
+}
+
+/* Explicit centering on the showreel play-btn across all breakpoints
+   — defensive override in case a parent overrides flex. */
+.showreel-hero .play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+.showreel-hero .play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
