@@ -1599,7 +1599,12 @@ section {
 /* ----- Max-width 480px: Small phones ----- */
 @media (max-width: 480px) {
   h1 {
-    font-size: clamp(2.75rem, 10vw, 4rem);
+    font-size: clamp(2.25rem, 9vw, 3.5rem);
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 8.5vw, 3rem);
+    word-break: break-word;
   }
 
   .hero {
