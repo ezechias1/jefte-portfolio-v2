@@ -395,15 +395,26 @@ section {
 
 /* Mobile sub-items */
 .nav-mobile-sub {
-  font-size: 1rem !important;
-  padding-left: 24px;
-  opacity: 0.6;
-  font-family: 'Source Serif 4', serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  padding-left: 20px !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+  color: var(--text-muted-light) !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  border-bottom-color: rgba(250, 247, 242, 0.06) !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .nav-mobile-sub::before {
-  content: '— ';
-  color: var(--accent);
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 1px;
+  background: var(--accent);
+  margin-right: 12px;
+  vertical-align: middle;
 }
 
 /* Showreel Hero — full-width video at top */
@@ -443,6 +454,10 @@ section {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+.nav-hamburger.active span {
+  background-color: var(--text-light);
+}
+
 .nav-hamburger.active span:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
 }
@@ -462,16 +477,18 @@ section {
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--bg-light);
+  background-color: var(--bg-dark);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 32px;
+  padding: 80px 40px 40px;
+  gap: 0;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.4s ease, visibility 0.4s ease;
   z-index: 999;
+  overflow-y: auto;
 }
 
 .nav-mobile.active {
@@ -481,15 +498,33 @@ section {
 
 .nav-mobile a {
   font-family: 'Syne', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   text-transform: uppercase;
-  color: var(--text-dark);
+  letter-spacing: 0.04em;
+  color: var(--text-light);
   transition: color 0.3s ease;
+  padding: 12px 0;
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid var(--border-light-on-dark);
 }
 
-.nav-mobile a:hover {
+.nav-mobile a:last-of-type {
+  border-bottom: none;
+}
+
+.nav-mobile a:hover,
+.nav-mobile a:active {
   color: var(--accent);
+}
+
+.nav-mobile .btn {
+  margin-top: 32px;
+  width: 100%;
+  justify-content: center;
+  border-bottom: none;
+  font-size: 0.85rem;
 }
 
 /* Dark nav variant — for pages with dark hero */
@@ -1363,56 +1398,66 @@ section {
 .footer {
   background-color: var(--bg-dark);
   color: var(--text-light);
-  padding: 80px 0 32px;
-  border-top: 1px solid var(--border-light);
+  padding: 64px 0 28px;
+  border-top: none;
 }
 
 .footer-top {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 48px;
-  margin-bottom: 60px;
+  gap: 40px;
+  margin-bottom: 48px;
 }
 
 .footer-brand .nav-logo {
   display: inline-block;
-  margin-bottom: 16px;
-  color: var(--text-light);
+  margin-bottom: 12px;
 }
 
 .footer-brand p {
   color: var(--text-muted-light);
   max-width: 320px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
 }
 
 .footer-heading {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--text-light);
-  margin-bottom: 20px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .footer-links a {
   display: block;
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.9375rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8125rem;
   color: var(--text-muted-light);
-  padding: 6px 0;
-  transition: color 0.3s ease;
+  padding: 8px 0;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+  letter-spacing: 0.03em;
 }
 
 .footer-links a:hover {
-  color: var(--accent);
+  color: var(--text-light);
+  padding-left: 4px;
 }
 
 .footer-bottom {
   border-top: 1px solid var(--border-light-on-dark);
-  padding-top: 32px;
+  padding-top: 24px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
@@ -1420,8 +1465,9 @@ section {
 
 .footer-bottom p {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--text-muted-light);
+  letter-spacing: 0.05em;
 }
 
 .footer-bottom a {
