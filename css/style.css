@@ -1822,6 +1822,13 @@ section {
 @media (max-width: 767px) {
   .showreel-hero {
     display: block;
+    margin-top: 68px;
+  }
+  /* Full-bleed on mobile — no container padding */
+  .showreel-hero .container {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 100%;
   }
   .showreel-hero .video-placeholder {
     min-height: 0;
@@ -1834,6 +1841,21 @@ section {
   .showreel-thumb,
   .showreel-player {
     width: 100% !important;
+    border-radius: 0 !important;
+  }
+  /* Reduce gap between reel and hero */
+  .hero {
+    padding-top: 40px !important;
+  }
+  /* Clean up nav logo on mobile */
+  .nav-logo-img {
+    height: 44px;
+    border-radius: 6px;
+  }
+  /* Footer logo — single, no white box */
+  .nav-logo-img--footer {
+    height: 52px;
+    border-radius: 6px;
   }
 }
 
