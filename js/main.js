@@ -448,67 +448,125 @@ document.addEventListener('DOMContentLoaded', () => {
      player inside an overlay instead of navigating away. ESC or click
      the backdrop to close. Iframe is removed on close so audio stops.
      ============================ */
+  // Build the overlay once, lazily. Hoisted so showreel hover can use openLightbox too.
+  let lightbox;
+  let inner;
+
   const videoTriggers = document.querySelectorAll('[data-video]');
 
-  if (videoTriggers.length > 0) {
-    // Build the overlay once, lazily.
-    let lightbox;
-    let inner;
-    const ensureLightbox = () => {
-      if (lightbox) return;
-      lightbox = document.createElement('div');
-      lightbox.className = 'video-lightbox';
-      inner = document.createElement('div');
-      inner.className = 'video-lightbox-inner';
-      const close = document.createElement('button');
-      close.type = 'button';
-      close.className = 'video-lightbox-close';
-      close.setAttribute('aria-label', 'Close video');
-      close.textContent = '\u2715'; // ×
-      close.addEventListener('click', closeLightbox);
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-      });
-      inner.appendChild(close);
-      lightbox.appendChild(inner);
-      document.body.appendChild(lightbox);
-    };
+  const ensureLightbox = () => {
+    if (lightbox) return;
+    lightbox = document.createElement('div');
+    lightbox.className = 'video-lightbox';
+    inner = document.createElement('div');
+    inner.className = 'video-lightbox-inner';
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'video-lightbox-close';
+    close.setAttribute('aria-label', 'Close video');
+    close.textContent = '\u2715'; // ×
+    close.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    inner.appendChild(close);
+    lightbox.appendChild(inner);
+    document.body.appendChild(lightbox);
+  };
 
-    const openLightbox = (videoId) => {
-      ensureLightbox();
-      // Remove any previous iframe, then add a fresh one
-      const oldFrame = inner.querySelector('iframe');
-      if (oldFrame) oldFrame.remove();
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.setAttribute('title', 'Video player');
-      inner.appendChild(iframe);
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    };
+  const openLightbox = (videoId) => {
+    ensureLightbox();
+    // Remove any previous iframe, then add a fresh one
+    const oldFrame = inner.querySelector('iframe');
+    if (oldFrame) oldFrame.remove();
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.setAttribute('title', 'Video player');
+    inner.appendChild(iframe);
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
 
-    const closeLightbox = () => {
-      if (!lightbox) return;
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-      // Strip the iframe so audio stops and the next open starts fresh
-      const frame = inner?.querySelector('iframe');
-      if (frame) frame.remove();
-    };
+  const closeLightbox = () => {
+    if (!lightbox) return;
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+    // Strip the iframe so audio stops and the next open starts fresh
+    const frame = inner?.querySelector('iframe');
+    if (frame) frame.remove();
+  };
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  videoTriggers.forEach((el) => {
+    // Skip the showreel hover element — it has its own click handler
+    if (el.id === 'showreel-hover' || el.closest('#showreel-hover')) return;
+    el.addEventListener('click', (e) => {
+      const id = el.getAttribute('data-video');
+      if (!id) return;
+      e.preventDefault();
+      openLightbox(id);
+    });
+  });
+
+
+  /* ============================
+     12. Showreel hover-to-play
+     On mouseenter, inject a YouTube iframe that autoplays with sound.
+     On mouseleave, remove iframe and show thumbnail again.
+     Click opens the lightbox instead.
+     ============================ */
+  const showreelHover = document.getElementById('showreel-hover');
+
+  if (showreelHover) {
+    const videoId = showreelHover.getAttribute('data-video');
+    const thumb = showreelHover.querySelector('.showreel-thumb');
+    const playerContainer = document.getElementById('showreel-player');
+    let hoverTimeout = null;
+
+    showreelHover.addEventListener('mouseenter', () => {
+      // Small delay so accidental hovers don't trigger load
+      hoverTimeout = setTimeout(() => {
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=' + videoId;
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
+        // Clear previous iframe safely
+        while (playerContainer.firstChild) {
+          playerContainer.removeChild(playerContainer.firstChild);
+        }
+        playerContainer.appendChild(iframe);
+        playerContainer.style.display = 'block';
+        thumb.style.display = 'none';
+      }, 300);
     });
 
-    videoTriggers.forEach((el) => {
-      el.addEventListener('click', (e) => {
-        const id = el.getAttribute('data-video');
-        if (!id) return;
-        e.preventDefault();
-        openLightbox(id);
-      });
+    showreelHover.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimeout);
+      playerContainer.style.display = 'none';
+      while (playerContainer.firstChild) {
+        playerContainer.removeChild(playerContainer.firstChild);
+      }
+      thumb.style.display = 'block';
+    });
+
+    // Click opens the lightbox with full controls
+    showreelHover.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearTimeout(hoverTimeout);
+      playerContainer.style.display = 'none';
+      while (playerContainer.firstChild) {
+        playerContainer.removeChild(playerContainer.firstChild);
+      }
+      thumb.style.display = 'block';
+      if (typeof openLightbox === 'function') {
+        openLightbox(videoId);
+      }
     });
   }
 

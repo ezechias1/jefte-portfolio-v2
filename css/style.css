@@ -412,7 +412,7 @@ section {
   margin-top: 72px; /* clear fixed nav */
   background: var(--bg-darker);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .showreel-hero .video-placeholder {
@@ -578,13 +578,10 @@ section {
 
 /* Hero stats bar */
 .hero-stats {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  position: relative;
   border-top: 1px solid var(--border-light);
   padding: 32px 0;
-  z-index: 2;
+  margin-top: 48px;
 }
 
 .hero-stats .container {
@@ -984,7 +981,7 @@ section {
 
 @media (min-width: 1024px) {
   .services-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1824,9 +1821,7 @@ section {
    mobile layout because the forced height fought the aspect-ratio. */
 @media (max-width: 767px) {
   .showreel-hero {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
   }
   .showreel-hero .video-placeholder {
     min-height: 0;
@@ -1834,6 +1829,11 @@ section {
     width: 100%;
     max-width: 100%;
     max-height: none;
+  }
+  .showreel-hover,
+  .showreel-thumb,
+  .showreel-player {
+    width: 100% !important;
   }
 }
 
@@ -1996,4 +1996,191 @@ section {
 }
 body.light .location-beat {
   background-color: var(--bg-light);
+}
+
+
+/* ============================================================
+   21. NAV LOGO IMAGE (Storybox Studios rebrand)
+   ============================================================ */
+
+.nav-logo-img {
+  height: 52px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.nav-logo-img--footer {
+  height: 64px;
+  border-radius: 6px;
+}
+
+/* On scrolled nav, slightly smaller */
+.nav-scrolled .nav-logo-img {
+  height: 42px;
+}
+
+
+/* ============================================================
+   22. ABOUT PAGE — PHOTO GALLERY (Storybox Studios)
+   ============================================================ */
+
+/* Hero split: big studio portrait left, bio right */
+.about-hero-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  min-height: 70vh;
+}
+
+.about-hero-image {
+  position: relative;
+  overflow: hidden;
+  min-height: 50vh;
+}
+
+.about-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-hero-image::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(26,26,26,0.6), transparent);
+  pointer-events: none;
+}
+
+.about-hero-bio {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  padding: clamp(40px, 6vw, 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-hero-bio .section-subtitle {
+  margin-bottom: 16px;
+}
+
+.about-hero-bio h1 {
+  color: var(--text-light);
+  margin-bottom: 32px;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+}
+
+.about-hero-bio p {
+  color: var(--text-muted-light);
+  margin-bottom: 16px;
+  max-width: 520px;
+}
+
+.about-hero-bio p:last-of-type {
+  margin-bottom: 0;
+}
+
+@media (min-width: 1024px) {
+  .about-hero-split {
+    grid-template-columns: 1fr 1fr;
+    min-height: 85vh;
+  }
+
+  .about-hero-image {
+    min-height: 0;
+  }
+}
+
+/* Behind the Lens — asymmetric photo mosaic */
+.photo-mosaic {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 8px;
+}
+
+.photo-mosaic-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.photo-mosaic-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.photo-mosaic-item:hover img {
+  transform: scale(1.04);
+}
+
+/* Tall item spans 2 rows */
+.photo-mosaic-item--tall {
+  grid-row: span 2;
+}
+
+/* Wide item spans 2 columns */
+.photo-mosaic-item--wide {
+  grid-column: span 2;
+}
+
+/* Caption overlay on hover */
+.photo-mosaic-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.photo-mosaic-item:hover .photo-mosaic-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .photo-mosaic {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .photo-mosaic {
+    gap: 16px;
+  }
+}
+
+/* Section intro text — centered with max-width */
+.section-intro {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto clamp(40px, 5vw, 64px);
+}
+
+.section-intro h2 {
+  margin-bottom: 16px;
+}
+
+.section-intro p {
+  font-size: 1.0625rem;
 }

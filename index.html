@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jefte — Film Editor · Videographer · Photographer</title>
-  <meta name="description" content="Jefte is a cinematic storyteller — Film Editor, Videographer and Photographer based in Cape Town, crafting visuals that move people.">
+  <title>Storybox Studios — Film · Video · Production by Jefte Mulamba</title>
+  <meta name="description" content="Storybox Studios by Jefte Mulamba — cinematic storytelling through film editing — Film Editor, Videographer and Photographer based in Cape Town, crafting visuals that move people.">
   <meta name="theme-color" content="#FAF7F2">
-  <link rel="icon" href="images/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="images/icons/favicon.jpeg" type="image/jpeg">
 
   <!-- Open Graph / Twitter card — shown when the URL is pasted in
        Slack / WhatsApp / iMessage / LinkedIn / Twitter, etc. -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Jefte — Film Editor · Videographer · Photographer">
+  <meta property="og:title" content="Storybox Studios — Film · Video · Production by Jefte Mulamba">
   <meta property="og:description" content="Cinematic films, events and portraits from Cape Town. Watch the 2026 highlight reel.">
   <meta property="og:url" content="https://jefte-portfolio-v2.vercel.app/">
-  <meta property="og:site_name" content="Jefte">
+  <meta property="og:site_name" content="Storybox Studios">
   <meta property="og:image" content="https://img.youtube.com/vi/4DM_57ZgZG4/maxresdefault.jpg">
   <meta property="og:image:width" content="1280">
   <meta property="og:image:height" content="720">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jefte — Film Editor · Videographer · Photographer">
+  <meta name="twitter:title" content="Storybox Studios — Film · Video · Production by Jefte Mulamba">
   <meta name="twitter:description" content="Cinematic films, events and portraits from Cape Town. Watch the 2026 highlight reel.">
   <meta name="twitter:image" content="https://img.youtube.com/vi/4DM_57ZgZG4/maxresdefault.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,16 +32,17 @@
   <!-- Navigation -->
   <nav class="nav">
     <div class="container flex-between">
-      <a href="index.html" class="nav-logo">JEFTE</a>
+      <a href="index.html" class="nav-logo"><img src="images/logo.jpeg" alt="Storybox Studios" class="nav-logo-img"></a>
       <div class="nav-links">
         <a href="about.html">About</a>
         <div class="nav-dropdown">
           <span class="nav-dropdown-toggle">Services <span class="nav-dropdown-arrow">▾</span></span>
           <div class="nav-dropdown-menu">
-            <a href="film-editing.html">Film Editing</a>
-            <a href="videography.html">Event Videography</a>
-            <a href="photography.html">Photography</a>
-            <a href="documentaries.html">Documentaries</a>
+            <a href="film-editing.html">Trailers</a>
+            <a href="videography.html">Behind The Scenes</a>
+            <a href="documentaries.html">Documentary</a>
+            <a href="social-media.html">Social Media</a>
+            <a href="events.html">Event</a>
           </div>
         </div>
         
@@ -57,10 +58,11 @@
   <div class="nav-mobile">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
-    <a href="film-editing.html" class="nav-mobile-sub">Film Editing</a>
-    <a href="videography.html" class="nav-mobile-sub">Event Videography</a>
-    <a href="photography.html" class="nav-mobile-sub">Photography</a>
-    <a href="documentaries.html" class="nav-mobile-sub">Documentaries</a>
+    <a href="film-editing.html" class="nav-mobile-sub">Trailers</a>
+    <a href="videography.html" class="nav-mobile-sub">Behind The Scenes</a>
+    <a href="documentaries.html" class="nav-mobile-sub">Documentary</a>
+    <a href="social-media.html" class="nav-mobile-sub">Social Media</a>
+    <a href="events.html" class="nav-mobile-sub">Event</a>
     <a href="personal.html">Personal</a>
     <a href="contact.html">Contact</a>
     <a href="booking.html" class="btn btn-primary" style="margin-top:24px;">Book Me</a>
@@ -68,44 +70,34 @@
 
   <main>
 
-    <!-- Showreel — Full-width highlight reel, opens in the lightbox -->
+    <!-- Showreel — Hover-to-play highlight reel -->
     <section class="showreel-hero">
-      <a
-        href="https://youtu.be/4DM_57ZgZG4"
-        data-video="4DM_57ZgZG4"
-        target="_blank"
-        rel="noopener"
-        class="showreel-trigger"
-        aria-label="Play highlight reel"
-      >
-        <div
-          class="video-placeholder"
-          style="border:none;aspect-ratio:16/9;min-height:60vh;background-image:url('https://img.youtube.com/vi/4DM_57ZgZG4/maxresdefault.jpg');background-size:cover;background-position:center;"
-        >
-          <span>HIGHLIGHT REEL 2026 &middot; 0:37</span>
-          <div class="play-btn">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg>
+      <div class="container">
+        <div class="showreel-hover" id="showreel-hover" data-video="4DM_57ZgZG4">
+          <div class="showreel-thumb" style="width:100%;aspect-ratio:16/9;background-image:url('https://img.youtube.com/vi/4DM_57ZgZG4/maxresdefault.jpg');background-size:cover;background-position:center;position:relative;cursor:pointer;border-radius:2px;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.55) 100%);pointer-events:none;"></div>
+            <span style="position:absolute;top:clamp(16px,3vw,28px);left:clamp(16px,3vw,28px);color:#fff;letter-spacing:0.2em;z-index:2;font-family:'IBM Plex Mono',monospace;font-size:clamp(0.7rem,1.2vw,0.85rem);text-transform:uppercase;">HIGHLIGHT REEL 2026 &middot; 0:37</span>
+            <div class="play-btn" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;width:clamp(64px,10vw,100px);height:clamp(64px,10vw,100px);background:rgba(255,255,255,0.15);border-color:#fff;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:2px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill:#fff;width:32px;height:32px;"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg>
+            </div>
           </div>
+          <div class="showreel-player" id="showreel-player" style="display:none;aspect-ratio:16/9;border-radius:2px;overflow:hidden;"></div>
         </div>
-      </a>
+      </div>
     </section>
 
     <!-- Hero Section -->
-    <section class="hero" style="min-height:auto;padding:clamp(80px,10vw,140px) 0 160px;">
+    <section class="hero" style="min-height:auto;padding:clamp(80px,10vw,140px) 0 0;">
       <div class="container">
         <div class="hero-content">
-          <span class="section-subtitle">Film &middot; Video &middot; Photo</span>
+          <span class="section-subtitle">Film &middot; Video &middot; Production</span>
           <h1>STORIES<br>WORTH <em>Watching.</em></h1>
-          <p class="hero-subtitle">Film editor, videographer and photographer based in Cape Town. Crafting cinematic visuals for brands, artists and moments that matter.</p>
-          <div class="hero-buttons">
+          <p class="hero-subtitle">Film editor, videographer and content creator based in Cape Town. Crafting cinematic visuals for brands, artists and moments that matter.</p>
+          <div class="hero-buttons" style="position:relative;z-index:3;">
             <a href="portfolio.html" class="btn btn-primary">View Work</a>
             <a href="quote.html" class="btn btn-secondary">Get a Quote</a>
           </div>
         </div>
-      </div>
-      <div class="scroll-indicator">
-        <span>Scroll</span>
-        <div class="line"></div>
       </div>
       <div class="hero-stats">
         <div class="stat">
@@ -142,41 +134,41 @@
         <div class="projects-scroll">
           <a href="https://youtu.be/Tak3udb7nVI" data-video="Tak3udb7nVI" target="_blank" rel="noopener" class="project-card" data-category="documentary">
             <div class="project-card-image">
-              <img src="https://img.youtube.com/vi/Tak3udb7nVI/maxresdefault.jpg" alt="Trailer 1" loading="lazy">
+              <img src="https://img.youtube.com/vi/Tak3udb7nVI/maxresdefault.jpg" alt="Average Joe Trailer: The Love Story" loading="lazy">
             </div>
             <span class="project-card-category">TRAILER</span>
             <div class="project-card-info">
-              <h3 class="project-card-title">Trailer 1</h3>
+              <h3 class="project-card-title">Average Joe Trailer: The Love Story</h3>
               <span class="project-card-meta">2024</span>
             </div>
           </a>
           <a href="https://youtu.be/nRXGHxlPu4A" data-video="nRXGHxlPu4A" target="_blank" rel="noopener" class="project-card" data-category="documentary">
             <div class="project-card-image">
-              <img src="https://img.youtube.com/vi/nRXGHxlPu4A/maxresdefault.jpg" alt="Trailer 2" loading="lazy">
+              <img src="https://img.youtube.com/vi/nRXGHxlPu4A/maxresdefault.jpg" alt="Cartoon Network's: The Lembwas - Bespoke Promo" loading="lazy">
             </div>
             <span class="project-card-category">TRAILER</span>
             <div class="project-card-info">
-              <h3 class="project-card-title">Trailer 2</h3>
+              <h3 class="project-card-title">Cartoon Network's: The Lembwas - Bespoke Promo</h3>
               <span class="project-card-meta">2024</span>
             </div>
           </a>
           <a href="https://youtu.be/83xiYw1awkE" data-video="83xiYw1awkE" target="_blank" rel="noopener" class="project-card" data-category="video">
             <div class="project-card-image">
-              <img src="https://img.youtube.com/vi/83xiYw1awkE/maxresdefault.jpg" alt="Behind The Scenes 1" loading="lazy">
+              <img src="https://img.youtube.com/vi/83xiYw1awkE/maxresdefault.jpg" alt="Behind The Scenes - For My Brothers Back Home Documentary" loading="lazy">
             </div>
             <span class="project-card-category">BEHIND THE SCENES</span>
             <div class="project-card-info">
-              <h3 class="project-card-title">Behind The Scenes 1</h3>
+              <h3 class="project-card-title">Behind The Scenes - For My Brothers Back Home Documentary</h3>
               <span class="project-card-meta">2024</span>
             </div>
           </a>
           <a href="https://youtu.be/ZZcAOhdCEIQ" data-video="ZZcAOhdCEIQ" target="_blank" rel="noopener" class="project-card" data-category="video">
             <div class="project-card-image">
-              <img src="https://img.youtube.com/vi/ZZcAOhdCEIQ/maxresdefault.jpg" alt="Behind The Scenes 2" loading="lazy">
+              <img src="https://img.youtube.com/vi/ZZcAOhdCEIQ/maxresdefault.jpg" alt="Behind The Scenes - Average Joe S2" loading="lazy">
             </div>
             <span class="project-card-category">BEHIND THE SCENES</span>
             <div class="project-card-info">
-              <h3 class="project-card-title">Behind The Scenes 2</h3>
+              <h3 class="project-card-title">Behind The Scenes - Average Joe S2</h3>
               <span class="project-card-meta">2024</span>
             </div>
           </a>
@@ -196,14 +188,12 @@
 
     <!-- Services Section -->
     <section class="section section--light reveal">
-      <div class="section-number">02</div>
       <div class="container">
         <div class="section-header">
           <div>
             <span class="section-subtitle">What I Do</span>
             <h2>Services</h2>
           </div>
-          <a href="services.html" class="btn-text">Full Services &rarr;</a>
         </div>
         <div class="services-grid">
           <div class="service-card">
@@ -222,15 +212,6 @@
               <span class="service-tag">4K Production</span>
               <span class="service-tag">Drone</span>
               <span class="service-tag">Multi-cam</span>
-            </div>
-          </div>
-          <div class="service-card">
-            <h3>Photography</h3>
-            <p>Portraits, products, events. Clean, editorial imagery that works across print and digital.</p>
-            <div class="service-tags">
-              <span class="service-tag">Lightroom</span>
-              <span class="service-tag">Studio</span>
-              <span class="service-tag">On-location</span>
             </div>
           </div>
         </div>
@@ -257,8 +238,8 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
-          <a href="index.html" class="nav-logo">JEFTE</a>
-          <p>Film &middot; Video &middot; Photo</p>
+          <a href="index.html" class="nav-logo"><img src="images/logo.jpeg" alt="Storybox Studios" class="nav-logo-img"></a>
+          <p>Film &middot; Video &middot; Production</p>
         </div>
         <div>
           <h4 class="footer-heading">Pages</h4>
@@ -282,11 +263,136 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2024 Jefte. All rights reserved.</p>
+        <p>&copy; 2026 Storybox Studios. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+  // Showreel: hover-to-play (desktop) + tap-to-play (mobile) with unmute button
+  (function() {
+    var el = document.getElementById('showreel-hover');
+    if (!el) return;
+    var videoId = el.getAttribute('data-video');
+    var thumb = el.querySelector('.showreel-thumb');
+    var player = document.getElementById('showreel-player');
+    var timer = null;
+    var ytPlayer = null;
+    var isMuted = true;
+    var isPlaying = false;
+    var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    // Create unmute button
+    var unmuteBtn = document.createElement('button');
+    unmuteBtn.type = 'button';
+    unmuteBtn.setAttribute('aria-label', 'Unmute video');
+    unmuteBtn.style.cssText = 'display:none;position:absolute;bottom:20px;right:20px;z-index:10;width:48px;height:48px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,0.6);color:#fff;cursor:pointer;font-size:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:background 0.2s;';
+    unmuteBtn.textContent = '\uD83D\uDD07';
+    el.style.position = 'relative';
+    el.appendChild(unmuteBtn);
+
+    // Create close button (mobile only)
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Close video');
+    closeBtn.style.cssText = 'display:none;position:absolute;top:16px;right:16px;z-index:10;width:40px;height:40px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,0.6);color:#fff;cursor:pointer;font-size:18px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:background 0.2s;line-height:1;';
+    closeBtn.textContent = '\u2715';
+    el.appendChild(closeBtn);
+
+    unmuteBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (!ytPlayer) return;
+      if (isMuted) {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(100);
+        isMuted = false;
+        unmuteBtn.textContent = '\uD83D\uDD0A';
+      } else {
+        ytPlayer.mute();
+        isMuted = true;
+        unmuteBtn.textContent = '\uD83D\uDD07';
+      }
+    });
+
+    function startVideo() {
+      if (isPlaying) return;
+      isPlaying = true;
+      var playerDiv = document.createElement('div');
+      playerDiv.id = 'yt-showreel';
+      playerDiv.style.cssText = 'width:100%;height:100%;';
+      while (player.firstChild) player.removeChild(player.firstChild);
+      player.appendChild(playerDiv);
+      player.style.display = 'block';
+      thumb.style.display = 'none';
+      unmuteBtn.style.display = 'block';
+      if (isTouch) closeBtn.style.display = 'block';
+      isMuted = true;
+      unmuteBtn.textContent = '\uD83D\uDD07';
+
+      ytPlayer = new YT.Player('yt-showreel', {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          showinfo: 0,
+          rel: 0,
+          modestbranding: 1,
+          loop: 1,
+          playlist: videoId,
+          playsinline: 1
+        },
+        events: {
+          onReady: function(event) {
+            event.target.playVideo();
+          }
+        }
+      });
+    }
+
+    function stopVideo() {
+      clearTimeout(timer);
+      if (ytPlayer && ytPlayer.destroy) {
+        ytPlayer.destroy();
+        ytPlayer = null;
+      }
+      player.style.display = 'none';
+      while (player.firstChild) player.removeChild(player.firstChild);
+      thumb.style.display = 'block';
+      unmuteBtn.style.display = 'none';
+      closeBtn.style.display = 'none';
+      isMuted = true;
+      isPlaying = false;
+    }
+
+    if (isTouch) {
+      // Mobile: tap to play, close button to stop
+      el.addEventListener('click', function(e) {
+        if (e.target === unmuteBtn || e.target === closeBtn) return;
+        e.preventDefault();
+        if (isPlaying) return;
+        startVideo();
+      });
+
+      closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        stopVideo();
+      });
+    } else {
+      // Desktop: hover to play
+      el.addEventListener('mouseenter', function() {
+        timer = setTimeout(startVideo, 300);
+      });
+
+      el.addEventListener('mouseleave', function() {
+        stopVideo();
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

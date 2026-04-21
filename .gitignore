@@ -6,3 +6,7 @@ jefte-media/
 *.wav
 *.cr2
 *.MP4
+jefte-media-backup/
+node_modules/
+package.json
+package-lock.json
