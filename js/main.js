@@ -514,60 +514,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  /* ============================
-     12. Showreel hover-to-play
-     On mouseenter, inject a YouTube iframe that autoplays with sound.
-     On mouseleave, remove iframe and show thumbnail again.
-     Click opens the lightbox instead.
-     ============================ */
-  const showreelHover = document.getElementById('showreel-hover');
-
-  if (showreelHover) {
-    const videoId = showreelHover.getAttribute('data-video');
-    const thumb = showreelHover.querySelector('.showreel-thumb');
-    const playerContainer = document.getElementById('showreel-player');
-    let hoverTimeout = null;
-
-    showreelHover.addEventListener('mouseenter', () => {
-      // Small delay so accidental hovers don't trigger load
-      hoverTimeout = setTimeout(() => {
-        const iframe = document.createElement('iframe');
-        iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=' + videoId;
-        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        iframe.setAttribute('allowfullscreen', '');
-        iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
-        // Clear previous iframe safely
-        while (playerContainer.firstChild) {
-          playerContainer.removeChild(playerContainer.firstChild);
-        }
-        playerContainer.appendChild(iframe);
-        playerContainer.style.display = 'block';
-        thumb.style.display = 'none';
-      }, 300);
-    });
-
-    showreelHover.addEventListener('mouseleave', () => {
-      clearTimeout(hoverTimeout);
-      playerContainer.style.display = 'none';
-      while (playerContainer.firstChild) {
-        playerContainer.removeChild(playerContainer.firstChild);
-      }
-      thumb.style.display = 'block';
-    });
-
-    // Click opens the lightbox with full controls
-    showreelHover.addEventListener('click', (e) => {
-      e.preventDefault();
-      clearTimeout(hoverTimeout);
-      playerContainer.style.display = 'none';
-      while (playerContainer.firstChild) {
-        playerContainer.removeChild(playerContainer.firstChild);
-      }
-      thumb.style.display = 'block';
-      if (typeof openLightbox === 'function') {
-        openLightbox(videoId);
-      }
-    });
-  }
+  // Showreel hover-to-play is handled by inline script in index.html
 
 });
