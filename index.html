@@ -269,7 +269,6 @@
   </footer>
 
   <script src="js/main.js"></script>
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
   // Showreel: hover-to-play (desktop) + tap-to-play (mobile) with unmute button
   (function() {
@@ -282,6 +281,7 @@
     var ytPlayer = null;
     var isMuted = true;
     var isPlaying = false;
+    var apiReady = false;
     var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     // Create unmute button
@@ -304,21 +304,24 @@
     unmuteBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       e.preventDefault();
-      if (!ytPlayer) return;
-      if (isMuted) {
-        ytPlayer.unMute();
-        ytPlayer.setVolume(100);
-        isMuted = false;
-        unmuteBtn.textContent = '\uD83D\uDD0A';
-      } else {
-        ytPlayer.mute();
-        isMuted = true;
-        unmuteBtn.textContent = '\uD83D\uDD07';
-      }
+      if (!ytPlayer || !ytPlayer.isMuted) return;
+      try {
+        if (isMuted) {
+          ytPlayer.unMute();
+          ytPlayer.setVolume(100);
+          isMuted = false;
+          unmuteBtn.textContent = '\uD83D\uDD0A';
+        } else {
+          ytPlayer.mute();
+          isMuted = true;
+          unmuteBtn.textContent = '\uD83D\uDD07';
+        }
+      } catch(err) {}
     });
 
     function startVideo() {
       if (isPlaying) return;
+      if (!apiReady) return;
       isPlaying = true;
       var playerDiv = document.createElement('div');
       playerDiv.id = 'yt-showreel';
@@ -343,7 +346,9 @@
           modestbranding: 1,
           loop: 1,
           playlist: videoId,
-          playsinline: 1
+          playsinline: 1,
+          enablejsapi: 1,
+          origin: window.location.origin
         },
         events: {
           onReady: function(event) {
@@ -355,10 +360,12 @@
 
     function stopVideo() {
       clearTimeout(timer);
-      if (ytPlayer && ytPlayer.destroy) {
-        ytPlayer.destroy();
-        ytPlayer = null;
-      }
+      try {
+        if (ytPlayer && ytPlayer.destroy) {
+          ytPlayer.destroy();
+        }
+      } catch(err) {}
+      ytPlayer = null;
       player.style.display = 'none';
       while (player.firstChild) player.removeChild(player.firstChild);
       thumb.style.display = 'block';
@@ -369,7 +376,6 @@
     }
 
     if (isTouch) {
-      // Mobile: tap to play, close button to stop
       el.addEventListener('click', function(e) {
         if (e.target === unmuteBtn || e.target === closeBtn) return;
         e.preventDefault();
@@ -383,7 +389,6 @@
         stopVideo();
       });
     } else {
-      // Desktop: hover to play
       el.addEventListener('mouseenter', function() {
         timer = setTimeout(startVideo, 300);
       });
@@ -392,6 +397,14 @@
         stopVideo();
       });
     }
+
+    // Load YouTube IFrame API
+    window.onYouTubeIframeAPIReady = function() {
+      apiReady = true;
+    };
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
   })();
   </script>
 </body>
