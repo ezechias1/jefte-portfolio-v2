@@ -71,34 +71,55 @@
   <main>
 
     <!-- Showreel — Hover-to-play highlight reel -->
-    <section class="showreel-hero">
-      <div class="container">
-        <div class="showreel-hover" id="showreel-hover" data-video="4DM_57ZgZG4">
-          <div class="showreel-thumb" style="width:100%;aspect-ratio:16/9;background-image:url('https://img.youtube.com/vi/4DM_57ZgZG4/maxresdefault.jpg');background-size:cover;background-position:center;position:relative;cursor:pointer;border-radius:2px;overflow:hidden;">
-            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.55) 100%);pointer-events:none;"></div>
-            <span style="position:absolute;top:clamp(16px,3vw,28px);left:clamp(16px,3vw,28px);color:#fff;letter-spacing:0.2em;z-index:2;font-family:'IBM Plex Mono',monospace;font-size:clamp(0.7rem,1.2vw,0.85rem);text-transform:uppercase;">HIGHLIGHT REEL 2026 &middot; 0:37</span>
-            <div class="play-btn" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;width:clamp(64px,10vw,100px);height:clamp(64px,10vw,100px);background:rgba(255,255,255,0.15);border-color:#fff;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:2px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill:#fff;width:32px;height:32px;"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg>
+    <!-- ============================================================
+         Hero.
+
+         The reel is the hero, not a thumbnail sitting above it. A
+         filmmaker's site has to show the work moving in the first
+         second, so the footage runs silently behind the headline and
+         the visitor never has to press anything to find out whether
+         he is any good.
+         ============================================================ -->
+    <section class="reel-hero" id="reel-hero" data-reel="4DM_57ZgZG4">
+      <div class="reel-hero-media">
+        <div class="reel-hero-poster" style="background-image:url('https://img.youtube.com/vi/4DM_57ZgZG4/maxresdefault.jpg');"></div>
+        <div class="reel-hero-frame" id="reel-hero-frame" aria-hidden="true"></div>
+      </div>
+      <div class="reel-hero-scrim" aria-hidden="true"></div>
+
+      <div class="reel-hero-inner">
+        <div class="container">
+          <span class="reel-tag">Highlight Reel 2026 &middot; 0:37</span>
+
+          <div class="reel-hero-copy">
+            <span class="section-subtitle">Film &middot; Video &middot; Production</span>
+            <h1>STORIES<br>WORTH <em>Watching.</em></h1>
+            <p class="hero-subtitle">Film editor, videographer and content creator based in Cape Town. Crafting cinematic visuals for brands, artists and moments that matter.</p>
+            <div class="hero-buttons">
+              <a href="portfolio.html" class="btn btn-primary">View Work</a>
+              <a href="quote.html" class="btn btn-secondary">Get a Quote</a>
             </div>
           </div>
-          <div class="showreel-player" id="showreel-player" style="display:none;aspect-ratio:16/9;border-radius:2px;overflow:hidden;"></div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Hero Section -->
-    <section class="hero" style="min-height:auto;padding:clamp(80px,10vw,140px) 0 0;">
-      <div class="container">
-        <div class="hero-content">
-          <span class="section-subtitle">Film &middot; Video &middot; Production</span>
-          <h1>STORIES<br>WORTH <em>Watching.</em></h1>
-          <p class="hero-subtitle">Film editor, videographer and content creator based in Cape Town. Crafting cinematic visuals for brands, artists and moments that matter.</p>
-          <div class="hero-buttons" style="position:relative;z-index:3;">
-            <a href="portfolio.html" class="btn btn-primary">View Work</a>
-            <a href="quote.html" class="btn btn-secondary">Get a Quote</a>
+          <div class="reel-hero-controls">
+            <button type="button" class="reel-sound" id="reel-sound" aria-pressed="false">
+              <svg class="reel-sound-off" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor"/><path d="m16 9 5 6m0-6-5 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <svg class="reel-sound-on" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" fill="currentColor"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+              <span class="reel-sound-label">Sound off</span>
+            </button>
+            <button type="button" class="reel-expand" data-video="4DM_57ZgZG4">Watch full reel &rarr;</button>
           </div>
         </div>
       </div>
+
+      <a href="#featured" class="reel-scroll" aria-label="Scroll to featured work">
+        <span>Scroll</span>
+        <span class="reel-scroll-line" aria-hidden="true"></span>
+      </a>
+    </section>
+
+    <!-- Stats -->
+    <section class="hero-stats-band">
       <div class="hero-stats">
         <div class="stat">
           <div class="stat-number"><span class="counter" data-target="150">0</span>+</div>
@@ -117,58 +138,86 @@
 
     <!-- (Showreel moved to top of page) -->
 
-    <!-- Featured Projects Section -->
-    <section class="section section--dark reveal">
+    <!-- ============================================================
+         Featured work.
+
+         Full-bleed frames rather than a row of cards: a card grid is a
+         listing pattern and reads like a blog. Each piece gets its own
+         band, and on a pointer device the clip starts playing silently
+         in place — so you are watching the work, not deciding whether
+         to click on it.
+         ============================================================ -->
+    <section class="section--dark work-band reveal" id="featured">
       <div class="container">
         <div class="section-header">
           <div>
             <span class="section-subtitle">Selected Work</span>
             <h2>Featured Projects</h2>
           </div>
-          <a href="portfolio.html" class="btn-text">All Projects &rarr;</a>
+          <a href="portfolio.html" class="btn-text">All Projects</a>
         </div>
-        <div class="projects-scroll">
-          <a href="https://youtu.be/Tak3udb7nVI" data-video="Tak3udb7nVI" target="_blank" rel="noopener" class="project-card" data-category="documentary">
-            <div class="project-card-image">
+      </div>
+
+      <div class="work-list">
+        <article class="work-item">
+          <a href="https://youtu.be/Tak3udb7nVI" data-video="Tak3udb7nVI" class="work-link">
+            <div class="work-media" data-yt="Tak3udb7nVI">
               <img src="https://img.youtube.com/vi/Tak3udb7nVI/maxresdefault.jpg" alt="Average Joe Trailer: The Love Story" loading="lazy">
+              <span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg></span>
             </div>
-            <span class="project-card-category">TRAILER</span>
-            <div class="project-card-info">
-              <h3 class="project-card-title">Average Joe Trailer: The Love Story</h3>
-              <span class="project-card-meta">2024</span>
+            <div class="work-meta">
+              <span class="work-index">01</span>
+              <span class="work-cat">Trailer</span>
+              <h3 class="work-title">Average Joe Trailer: The Love Story</h3>
+              <span class="work-year">2024</span>
             </div>
           </a>
-          <a href="https://youtu.be/nRXGHxlPu4A" data-video="nRXGHxlPu4A" target="_blank" rel="noopener" class="project-card" data-category="documentary">
-            <div class="project-card-image">
+        </article>
+
+        <article class="work-item work-item--flip">
+          <a href="https://youtu.be/nRXGHxlPu4A" data-video="nRXGHxlPu4A" class="work-link">
+            <div class="work-media" data-yt="nRXGHxlPu4A">
               <img src="https://img.youtube.com/vi/nRXGHxlPu4A/maxresdefault.jpg" alt="Cartoon Network's: The Lembwas - Bespoke Promo" loading="lazy">
+              <span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg></span>
             </div>
-            <span class="project-card-category">TRAILER</span>
-            <div class="project-card-info">
-              <h3 class="project-card-title">Cartoon Network's: The Lembwas - Bespoke Promo</h3>
-              <span class="project-card-meta">2024</span>
+            <div class="work-meta">
+              <span class="work-index">02</span>
+              <span class="work-cat">Bespoke Promo</span>
+              <h3 class="work-title">Cartoon Network&rsquo;s: The Lembwas</h3>
+              <span class="work-year">2024</span>
             </div>
           </a>
-          <a href="https://youtu.be/83xiYw1awkE" data-video="83xiYw1awkE" target="_blank" rel="noopener" class="project-card" data-category="video">
-            <div class="project-card-image">
+        </article>
+
+        <article class="work-item">
+          <a href="https://youtu.be/83xiYw1awkE" data-video="83xiYw1awkE" class="work-link">
+            <div class="work-media" data-yt="83xiYw1awkE">
               <img src="https://img.youtube.com/vi/83xiYw1awkE/maxresdefault.jpg" alt="Behind The Scenes - For My Brothers Back Home Documentary" loading="lazy">
+              <span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg></span>
             </div>
-            <span class="project-card-category">BEHIND THE SCENES</span>
-            <div class="project-card-info">
-              <h3 class="project-card-title">Behind The Scenes - For My Brothers Back Home Documentary</h3>
-              <span class="project-card-meta">2024</span>
+            <div class="work-meta">
+              <span class="work-index">03</span>
+              <span class="work-cat">Behind the Scenes</span>
+              <h3 class="work-title">For My Brothers Back Home</h3>
+              <span class="work-year">2024</span>
             </div>
           </a>
-          <a href="https://youtu.be/ZZcAOhdCEIQ" data-video="ZZcAOhdCEIQ" target="_blank" rel="noopener" class="project-card" data-category="video">
-            <div class="project-card-image">
+        </article>
+
+        <article class="work-item work-item--flip">
+          <a href="https://youtu.be/ZZcAOhdCEIQ" data-video="ZZcAOhdCEIQ" class="work-link">
+            <div class="work-media" data-yt="ZZcAOhdCEIQ">
               <img src="https://img.youtube.com/vi/ZZcAOhdCEIQ/maxresdefault.jpg" alt="Behind The Scenes - Average Joe S2" loading="lazy">
+              <span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><polygon points="8,5 19,12 8,19" fill="currentColor"/></svg></span>
             </div>
-            <span class="project-card-category">BEHIND THE SCENES</span>
-            <div class="project-card-info">
-              <h3 class="project-card-title">Behind The Scenes - Average Joe S2</h3>
-              <span class="project-card-meta">2024</span>
+            <div class="work-meta">
+              <span class="work-index">04</span>
+              <span class="work-cat">Behind the Scenes</span>
+              <h3 class="work-title">Average Joe S2</h3>
+              <span class="work-year">2024</span>
             </div>
           </a>
-        </div>
+        </article>
       </div>
     </section>
 

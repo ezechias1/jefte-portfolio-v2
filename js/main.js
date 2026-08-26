@@ -517,3 +517,146 @@ document.addEventListener('DOMContentLoaded', () => {
   // Showreel hover-to-play is handled by inline script in index.html
 
 });
+
+
+/* ============================================================
+   Reel hero + hover-to-play work bands
+
+   The footage runs muted and looping behind the headline, and each
+   work band starts playing when you point at it. Both are injected
+   after load rather than sitting in the markup, so the first paint
+   is the poster frame and nothing blocks it.
+   ============================================================ */
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return; // the posters stand on their own
+
+  // Most of this audience is on a phone on mobile data. If the browser
+  // says the connection is poor or the visitor has data saver on, do not
+  // pull a video stream at them — the poster frame is already good.
+  var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (conn && (conn.saveData === true || /^(slow-)?2g$/.test(conn.effectiveType || ''))) return;
+
+  function embed(id, extra) {
+    var p = [
+      'autoplay=1', 'mute=1', 'loop=1', 'playlist=' + id,
+      'controls=0', 'modestbranding=1', 'rel=0', 'playsinline=1',
+      'iv_load_policy=3', 'disablekb=1', 'fs=0', 'enablejsapi=1'
+    ].concat(extra || []).join('&');
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?' + p;
+    f.allow = 'autoplay; encrypted-media';
+    f.setAttribute('tabindex', '-1');
+    f.setAttribute('title', '');
+    f.setAttribute('aria-hidden', 'true');
+    return f;
+  }
+
+  function command(frame, func) {
+    if (!frame || !frame.contentWindow) return;
+    frame.contentWindow.postMessage(
+      JSON.stringify({ event: 'command', func: func, args: [] }), '*'
+    );
+  }
+
+  /* ---- hero ---- */
+  var hero = document.getElementById('reel-hero');
+  var slot = document.getElementById('reel-hero-frame');
+  if (hero && slot) {
+    var heroId = hero.getAttribute('data-reel');
+    var heroFrame = null;
+
+    // Crossfade off the poster only once the player says it is actually
+    // playing. A fixed timeout showed a black frame and a spinner whenever
+    // the connection was slower than the guess.
+    var reveal = function () { slot.classList.add('is-playing'); };
+
+    window.addEventListener('message', function (e) {
+      if (!/youtube(-nocookie)?\.com$/.test(e.origin.replace(/^https?:\/\/(www\.)?/, 'https://').replace('https://', ''))) {
+        if (e.origin.indexOf('youtube') === -1) return;
+      }
+      var data;
+      try { data = JSON.parse(e.data); } catch (err) { return; }
+      var info = data && data.info;
+      var state = (data && data.event === 'onStateChange') ? data.info
+                : (info && typeof info.playerState !== 'undefined') ? info.playerState
+                : null;
+      if (state === 1) reveal();   // 1 = playing
+    });
+
+    var startHero = function () {
+      if (heroFrame) return;
+      heroFrame = embed(heroId);
+      heroFrame.addEventListener('load', function () {
+        // Handshake so the player starts reporting its state back to us.
+        command(heroFrame, 'addEventListener');
+        try {
+          heroFrame.contentWindow.postMessage(
+            JSON.stringify({ event: 'listening', id: 'reel-hero' }), '*'
+          );
+        } catch (err) { /* cross-origin timing — the fallback covers it */ }
+      });
+      slot.appendChild(heroFrame);
+      // No timeout fallback here on purpose. The poster sits underneath
+      // permanently, so if playback never starts — slow connection, a
+      // network that blocks YouTube, a browser without the codecs — the
+      // visitor keeps a good still frame instead of a black rectangle.
+      // The player only ever fades in over the top of it.
+    };
+
+    if (document.readyState === 'complete') startHero();
+    else window.addEventListener('load', startHero, { once: true });
+
+    // Stop paying for the video once the hero is off screen.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          command(heroFrame, e.isIntersecting ? 'playVideo' : 'pauseVideo');
+        });
+      }, { threshold: 0.15 }).observe(hero);
+    }
+
+    var soundBtn = document.getElementById('reel-sound');
+    if (soundBtn) {
+      soundBtn.addEventListener('click', function () {
+        var on = soundBtn.getAttribute('aria-pressed') === 'true';
+        command(heroFrame, on ? 'mute' : 'unMute');
+        soundBtn.setAttribute('aria-pressed', on ? 'false' : 'true');
+        var label = soundBtn.querySelector('.reel-sound-label');
+        if (label) label.textContent = on ? 'Sound off' : 'Sound on';
+      });
+    }
+  }
+
+  /* ---- work bands ---- */
+  // Pointer devices only: on a phone this would autoplay four videos
+  // over someone's mobile data for no benefit, since there is no hover.
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  document.querySelectorAll('.work-media[data-yt]').forEach(function (media) {
+    var id = media.getAttribute('data-yt');
+    var frame = null;
+    var timer = null;
+
+    media.closest('.work-link').addEventListener('mouseenter', function () {
+      clearTimeout(timer);
+      // Brief delay so sweeping the cursor down the page does not fire
+      // every video at once.
+      timer = setTimeout(function () {
+        if (!frame) {
+          frame = embed(id);
+          media.appendChild(frame);
+        } else {
+          command(frame, 'playVideo');
+        }
+        media.classList.add('is-playing');
+      }, 220);
+    });
+
+    media.closest('.work-link').addEventListener('mouseleave', function () {
+      clearTimeout(timer);
+      media.classList.remove('is-playing');
+      command(frame, 'pauseVideo');
+    });
+  });
+})();
