@@ -2561,3 +2561,119 @@ body.light .location-beat {
       rgba(10,10,10,.88) 100%);
   }
 }
+
+
+/* ==========================================================================
+   STILLS  —  a contact sheet, not a grid
+   --------------------------------------------------------------------------
+   The photographs are a mix of portrait and landscape, shot that way on
+   purpose. A uniform grid would crop that decision out of them, so the strip
+   fixes the height and lets each frame take the width it actually needs.
+   ========================================================================== */
+.stills { background: var(--paper, #FAF7F2); padding: clamp(64px, 8vw, 110px) 0 clamp(56px, 7vw, 96px); }
+
+.stills-hint {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--accent, #E06030); white-space: nowrap;
+}
+
+.stills-strip {
+  display: flex;
+  gap: clamp(8px, 1vw, 14px);
+  margin-top: clamp(28px, 4vw, 48px);
+  padding: 0 clamp(20px, 5vw, 60px) 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26,26,26,.25) transparent;
+}
+.stills-strip::-webkit-scrollbar { height: 6px; }
+.stills-strip::-webkit-scrollbar-thumb { background: rgba(26,26,26,.22); }
+.stills-strip::-webkit-scrollbar-track { background: transparent; }
+
+.still {
+  flex: 0 0 auto;
+  height: clamp(240px, 34vw, 420px);
+  padding: 0; border: 0; background: #E8E2D8;
+  cursor: zoom-in;
+  scroll-snap-align: start;
+  overflow: hidden;
+  position: relative;
+}
+.still img {
+  height: 100%; width: auto; display: block;
+  transition: transform .7s cubic-bezier(.2,.7,.3,1), filter .5s ease;
+  filter: saturate(.92);
+}
+.still:hover img, .still:focus-visible img { transform: scale(1.04); filter: saturate(1.04); }
+.still:focus-visible { outline: 2px solid var(--accent, #E06030); outline-offset: 3px; }
+
+/* ---- lightbox ---- */
+.still-box {
+  /* The nav is z-index 1000 and its hamburger 1001, so a modal has to
+     clear both or the close button ends up behind the header. */
+  position: fixed; inset: 0; z-index: 2000;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(8,8,8,.94);
+  padding: clamp(16px, 4vw, 56px);
+}
+.still-box.is-open { display: flex; }
+.still-box img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  animation: stillIn .32s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes stillIn { from { opacity: 0; transform: scale(.985) } to { opacity: 1; transform: none } }
+
+.still-box-close, .still-box-prev, .still-box-next {
+  position: absolute; z-index: 2;
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff; cursor: pointer; font-size: 20px; line-height: 1;
+  transition: background .25s ease, border-color .25s ease;
+}
+.still-box-close:hover, .still-box-prev:hover, .still-box-next:hover {
+  background: rgba(255,255,255,.2); border-color: #fff;
+}
+.still-box-close { top: clamp(14px, 3vw, 26px); right: clamp(14px, 3vw, 26px); }
+.still-box-prev  { left: clamp(10px, 2vw, 24px); top: 50%; transform: translateY(-50%); }
+.still-box-next  { right: clamp(10px, 2vw, 24px); top: 50%; transform: translateY(-50%); }
+
+.still-box-count {
+  position: absolute; bottom: clamp(14px, 3vw, 26px); left: 50%;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .7rem; letter-spacing: .18em; color: rgba(255,255,255,.65);
+}
+
+@media (max-width: 620px) {
+  .still-box-prev, .still-box-next { width: 40px; height: 40px; }
+}
+
+/* Services became five cards, so they need to wrap rather than sit in a
+   fixed two-up that leaves an orphan on the end. */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(240px, 28vw, 320px), 1fr));
+  gap: clamp(18px, 2.4vw, 32px);
+}
+a.service-card { text-decoration: none; display: block; transition: transform .4s cubic-bezier(.2,.7,.3,1); }
+a.service-card:hover { transform: translateY(-4px); }
+a.service-card h3 { transition: color .3s ease; }
+a.service-card:hover h3 { color: var(--accent, #E06030); }
+
+@media (prefers-reduced-motion: reduce) {
+  .still img, a.service-card { transition: none !important; transform: none !important; }
+  .still-box img { animation: none !important; }
+}
+
+/* The nav is fixed, so an anchor jump parks the target underneath it and
+   clips the heading. Reserve its height on anything that can be linked to. */
+section[id], [id^="featured"], #stills, #top {
+  scroll-margin-top: clamp(72px, 9vw, 96px);
+}

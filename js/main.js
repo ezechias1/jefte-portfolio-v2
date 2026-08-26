@@ -660,3 +660,107 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 })();
+
+
+/* ============================================================
+   Stills lightbox
+
+   Photographs open full-size in place. Keyboard driven as well as
+   clickable, because a contact sheet is something people step through
+   rather than dip into.
+   ============================================================ */
+(function () {
+  var stills = Array.prototype.slice.call(document.querySelectorAll('.still'));
+  if (!stills.length) return;
+
+  var box, img, count, index = 0;
+  var lastFocus = null;
+
+  function build() {
+    box = document.createElement('div');
+    box.className = 'still-box';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', 'Photograph');
+
+    img = document.createElement('img');
+    img.alt = '';
+
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'still-box-close';
+    close.setAttribute('aria-label', 'Close');
+    close.innerHTML = '&times;';
+
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.className = 'still-box-prev';
+    prev.setAttribute('aria-label', 'Previous photograph');
+    prev.innerHTML = '&#8249;';
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'still-box-next';
+    next.setAttribute('aria-label', 'Next photograph');
+    next.innerHTML = '&#8250;';
+
+    count = document.createElement('div');
+    count.className = 'still-box-count';
+
+    close.addEventListener('click', hide);
+    prev.addEventListener('click', function (e) { e.stopPropagation(); step(-1); });
+    next.addEventListener('click', function (e) { e.stopPropagation(); step(1); });
+    box.addEventListener('click', function (e) { if (e.target === box || e.target === img) hide(); });
+
+    box.appendChild(img);
+    box.appendChild(close);
+    box.appendChild(prev);
+    box.appendChild(next);
+    box.appendChild(count);
+    document.body.appendChild(box);
+    return close;
+  }
+
+  function render() {
+    var src = stills[index].getAttribute('data-full');
+    // Re-add the node so the entrance animation replays on each step.
+    var fresh = img.cloneNode(false);
+    fresh.src = src;
+    fresh.alt = stills[index].querySelector('img').alt || '';
+    box.replaceChild(fresh, img);
+    img = fresh;
+    count.textContent = (index + 1) + ' / ' + stills.length;
+  }
+
+  function step(dir) {
+    index = (index + dir + stills.length) % stills.length;
+    render();
+  }
+
+  function show(i) {
+    lastFocus = document.activeElement;
+    index = i;
+    var close = box ? box.querySelector('.still-box-close') : build();
+    render();
+    box.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    close.focus({ preventScroll: true });
+  }
+
+  function hide() {
+    box.classList.remove('is-open');
+    document.body.style.overflow = '';
+    if (lastFocus) lastFocus.focus({ preventScroll: true });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (!box || !box.classList.contains('is-open')) return;
+    if (e.key === 'Escape') hide();
+    else if (e.key === 'ArrowLeft') step(-1);
+    else if (e.key === 'ArrowRight') step(1);
+  });
+
+  stills.forEach(function (el, i) {
+    el.addEventListener('click', function () { show(i); });
+  });
+})();
