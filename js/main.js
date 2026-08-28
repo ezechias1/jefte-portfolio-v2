@@ -451,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Build the overlay once, lazily. Hoisted so showreel hover can use openLightbox too.
   let lightbox;
   let inner;
+  let ytLink;
 
   const videoTriggers = document.querySelectorAll('[data-video]');
 
@@ -466,25 +467,47 @@ document.addEventListener('DOMContentLoaded', () => {
     close.setAttribute('aria-label', 'Close video');
     close.textContent = '\u2715'; // ×
     close.addEventListener('click', closeLightbox);
+    // Escape hatch. The card click is intercepted so the film opens in
+    // place, which means the href never fires — and when the embed itself
+    // refuses to play (embedding turned off on the video, a region block,
+    // a browser that blocks third-party frames) the visitor was left with
+    // a black box and no way through to YouTube. This is that way through.
+    ytLink = document.createElement('a');
+    ytLink.className = 'video-lightbox-yt';
+    ytLink.target = '_blank';
+    ytLink.rel = 'noopener';
+    ytLink.textContent = 'Watch on YouTube \u2197';
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
     });
     inner.appendChild(close);
+    inner.appendChild(ytLink);
     lightbox.appendChild(inner);
     document.body.appendChild(lightbox);
   };
 
-  const openLightbox = (videoId) => {
+  const openLightbox = (videoId, opts) => {
+    const o = opts || {};
     ensureLightbox();
     // Remove any previous iframe, then add a fresh one
     const oldFrame = inner.querySelector('iframe');
     if (oldFrame) oldFrame.remove();
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    // playsinline=1 is what makes this work on a phone. Without it iOS
+    // hands the film to its own fullscreen player or, more often, simply
+    // refuses to start it — which is why tapping a card on mobile opened
+    // a black rectangle that never played.
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     iframe.setAttribute('allowfullscreen', '');
     iframe.setAttribute('title', 'Video player');
     inner.appendChild(iframe);
+    // Keep the trigger's own URL where there is one, so a Short still
+    // links to its Short rather than a rewritten watch page.
+    ytLink.href = o.href || `https://youtu.be/${videoId}`;
+    // Shorts are shot vertical; a 9:16 film letterboxed into a 16:9 hole
+    // is a postage stamp on a phone.
+    lightbox.classList.toggle('is-vertical', !!o.vertical);
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
   };
@@ -508,8 +531,12 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('click', (e) => {
       const id = el.getAttribute('data-video');
       if (!id) return;
+      // A modified click is someone asking for the real YouTube page in a
+      // new tab. Swallowing it made these look like dead links.
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
       e.preventDefault();
-      openLightbox(id);
+      const href = el.getAttribute('href') || '';
+      openLightbox(id, { href: href || null, vertical: href.indexOf('/shorts/') !== -1 });
     });
   });
 
@@ -541,7 +568,10 @@ document.addEventListener('DOMContentLoaded', () => {
     var p = [
       'autoplay=1', 'mute=1', 'loop=1', 'playlist=' + id,
       'controls=0', 'modestbranding=1', 'rel=0', 'playsinline=1',
-      'iv_load_policy=3', 'disablekb=1', 'fs=0', 'enablejsapi=1'
+      'iv_load_policy=3', 'disablekb=1', 'fs=0', 'enablejsapi=1',
+      // enablejsapi wants to know who is allowed to talk to it. Without
+      // this some mobile browsers drop our messages on the floor.
+      'origin=' + encodeURIComponent(location.origin)
     ].concat(extra || []).join('&');
     var f = document.createElement('iframe');
     f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?' + p;
@@ -570,31 +600,57 @@ document.addEventListener('DOMContentLoaded', () => {
     // playing. A fixed timeout showed a black frame and a spinner whenever
     // the connection was slower than the guess.
     var reveal = function () { slot.classList.add('is-playing'); };
+    var answered = false;
+    var handshake = null;
 
     window.addEventListener('message', function (e) {
-      if (!/youtube(-nocookie)?\.com$/.test(e.origin.replace(/^https?:\/\/(www\.)?/, 'https://').replace('https://', ''))) {
-        if (e.origin.indexOf('youtube') === -1) return;
-      }
+      if (!/^https:\/\/(www\.)?youtube(-nocookie)?\.com$/.test(e.origin)) return;
       var data;
       try { data = JSON.parse(e.data); } catch (err) { return; }
+      // Any parseable answer proves the player is listening, so we can
+      // stop knocking.
+      answered = true;
+      if (handshake) { clearInterval(handshake); handshake = null; }
       var info = data && data.info;
       var state = (data && data.event === 'onStateChange') ? data.info
                 : (info && typeof info.playerState !== 'undefined') ? info.playerState
                 : null;
-      if (state === 1) reveal();   // 1 = playing
+      // 1 = playing, 3 = buffering. Buffering means the player has
+      // committed to this frame, and the crossfade is slow enough that the
+      // picture has almost always arrived by the time it finishes.
+      if (state === 1 || state === 3) reveal();
     });
+
+    // The player only answers postMessage once its own script is up inside
+    // the frame. One knock at iframe load was enough on a laptop and
+    // routinely too early on a phone, where the player boots a second or
+    // two later — and since the crossfade hangs off that answer, the reel
+    // was playing underneath a poster at opacity 0. It looked like the
+    // video simply never ran. So keep knocking until it answers.
+    var knock = function (frame) {
+      if (!frame || !frame.contentWindow) return;
+      try {
+        frame.contentWindow.postMessage(
+          JSON.stringify({ event: 'listening', id: 'reel-hero' }), '*'
+        );
+        command(frame, 'addEventListener');
+      } catch (err) { /* cross-origin timing — the next knock covers it */ }
+    };
 
     var startHero = function () {
       if (heroFrame) return;
       heroFrame = embed(heroId);
       heroFrame.addEventListener('load', function () {
-        // Handshake so the player starts reporting its state back to us.
-        command(heroFrame, 'addEventListener');
-        try {
-          heroFrame.contentWindow.postMessage(
-            JSON.stringify({ event: 'listening', id: 'reel-hero' }), '*'
-          );
-        } catch (err) { /* cross-origin timing — the fallback covers it */ }
+        var tries = 0;
+        knock(heroFrame);
+        handshake = setInterval(function () {
+          if (answered || ++tries > 24) {   // ~6s, then give up quietly
+            clearInterval(handshake);
+            handshake = null;
+            return;
+          }
+          knock(heroFrame);
+        }, 250);
       });
       slot.appendChild(heroFrame);
       // No timeout fallback here on purpose. The poster sits underneath

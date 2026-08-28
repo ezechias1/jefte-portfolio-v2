@@ -1798,11 +1798,21 @@ section {
   position: relative;
   width: 100%;
   max-width: 1100px;
+  /* A 16:9 box sized off the width alone is taller than a phone held
+     sideways, so the film ran off both edges of the screen and took the
+     close button with it. Cap it by height as well. */
+  max-width: min(1100px, calc((100svh - 120px) * 16 / 9));
   aspect-ratio: 16 / 9;
   background: #000;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+}
+
+/* Shorts are shot vertical. */
+.video-lightbox.is-vertical .video-lightbox-inner {
+  aspect-ratio: 9 / 16;
+  max-width: min(460px, calc((100svh - 120px) * 9 / 16));
 }
 .video-lightbox-inner iframe {
   width: 100%;
@@ -1832,6 +1842,35 @@ section {
 .video-lightbox-close:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.5);
+}
+
+.video-lightbox-yt {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.video-lightbox-yt:hover { color: #fff; text-decoration: underline; }
+
+/* On a phone there is no room above the frame for either control, so they
+   sit on the film itself. */
+@media (max-width: 620px) {
+  .video-lightbox-close {
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.55);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .video-lightbox-yt {
+    top: auto;
+    bottom: -32px;
+    left: 2px;
+  }
 }
 
 /* Play badge overlay on video-enabled project cards */
